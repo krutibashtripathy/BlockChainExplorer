@@ -8,19 +8,26 @@ export default function Navbar() {
   const [msg,setMsg] = useState("Connect to Metamask")
   const [acc,setacc]  = useState('');
   const [bal,setbal] = useState(0)
+  const[info,setInfo] = useState("MetaMask Wallet Not Found")
   const [isOpen, setIsOpen] = useState(false);
   const [trcount,settrcount] = useState(0)
+
+  
   const connectToMetamask = async(e) =>{
     e.preventDefault();
-    openModal()
     if(window.ethereum)
     {
+      openModal()
+      setInfo("Connected to MetaMask Wallet")
       const web3 = new Web3(window.ethereum);
       window.ethereum.request({method :'eth_requestAccounts'})
       .then((accounts)=>{
         console.log(accounts);
-        setMsg(accounts)
-        setacc(accounts)
+        
+          setMsg(accounts)
+          setacc(accounts)
+        
+
 
         web3.eth.getBalance(accounts[0])
           .then(balance => {
@@ -43,7 +50,13 @@ export default function Navbar() {
       }).catch((error)=>{
         console.log(error)
       })
-    }else{
+    }
+    
+    else {
+      openModal()
+      setInfo("MetaMask Wallet Not Found")
+      settrcount(0)
+      setbal(0)
       console.log("No ethereum provider found")
     }
   
@@ -53,11 +66,14 @@ export default function Navbar() {
 
   function openModal() {
     setIsOpen(true);
+ 
   }
 
   function closeModal() {
     setIsOpen(false);
+  
   }
+ 
 
   return (
     <>
@@ -82,10 +98,10 @@ export default function Navbar() {
   </div>
 
       <Modal className='metapopup' isOpen={isOpen} onRequestClose={closeModal}>
-        <h2><center>Connected to Metamask Wallet</center></h2>
-        <p><center>Account No. {acc}</center></p>
-        <p><center>Balance:  {bal}</center></p>
-        <p><center>Total Transactions:  {trcount}</center></p>
+        <h2 id="a1"><center>{info}</center></h2>
+        <p id="a2"><center>Account No. {acc}</center></p>
+        <p id="a3"><center>Balance:  {bal}</center></p>
+        <p id="a4"><center>Total Transactions:  {trcount}</center></p>
         <button className='closemetapopup' onClick={closeModal}>Close</button>
       </Modal>
 </nav>
